@@ -4,7 +4,11 @@ import '@material/web/button/filled-button.js';
 import '@material/web/button/outlined-button.js';
 import './scout-header.ts';
 import '../pages/scout-blank-page.ts';
+import '../pages/scout-form-page.ts';
 import '../pages/scout-home-page.ts';
+import '../pages/scout-list-page.ts';
+import '../pages/scout-map-page.ts';
+import '../pages/scout-settings-page.ts';
 
 type LinkData = {
   label: string;
@@ -21,10 +25,10 @@ export class ScoutApp extends LitElement {
 
   private readonly navigation: LinkData[] = [
     { label: 'Home', href: '#/home', description: 'Overview and latest activity' },
-    { label: 'Chat Rooms', href: '#/chatrooms', description: 'Join global conversations' },
-    { label: 'Live Events', href: '#/events', description: 'See what is happening now' },
-    { label: 'Resources', href: '#/resources', description: 'Discover scouting ideas' },
     { label: 'Settings', href: '#/settings', description: 'Manage your preferences' },
+    { label: 'Map', href: '#/map', description: 'Explore nearby scouting activity' },
+    { label: 'Form', href: '#/form', description: 'Submit scouting updates' },
+    { label: 'List', href: '#/list', description: 'Browse saved items' },
   ];
 
   private toggleMenu = () => {
@@ -99,18 +103,35 @@ export class ScoutApp extends LitElement {
     switch (route) {
       case 'home':
         return 'Home';
-      case 'chatrooms':
-        return 'Chat Rooms';
-      case 'events':
-        return 'Live Events';
-      case 'resources':
-        return 'Resources';
       case 'settings':
         return 'Settings';
+      case 'map':
+        return 'Map';
+      case 'form':
+        return 'Form';
+      case 'list':
+        return 'List';
       case 'profile':
         return 'My Profile';
       default:
         return 'Page';
+    }
+  }
+
+  private renderPage(route: string, pageLabel: string) {
+    switch (route) {
+      case 'home':
+        return html`<scout-home-page .navigation=${this.navigation}></scout-home-page>`;
+      case 'settings':
+        return html`<scout-settings-page .label=${pageLabel}></scout-settings-page>`;
+      case 'map':
+        return html`<scout-map-page .label=${pageLabel}></scout-map-page>`;
+      case 'form':
+        return html`<scout-form-page .label=${pageLabel}></scout-form-page>`;
+      case 'list':
+        return html`<scout-list-page .label=${pageLabel}></scout-list-page>`;
+      default:
+        return html`<scout-blank-page .label=${pageLabel}></scout-blank-page>`;
     }
   }
 
@@ -157,9 +178,7 @@ export class ScoutApp extends LitElement {
           </aside>
 
           <main class="content" aria-label=${pageLabel}>
-            ${this.route === 'home'
-              ? html`<scout-home-page .navigation=${this.navigation}></scout-home-page>`
-              : html`<scout-blank-page .label=${pageLabel}></scout-blank-page>`}
+            ${this.renderPage(this.route, pageLabel)}
           </main>
         </div>
       </div>

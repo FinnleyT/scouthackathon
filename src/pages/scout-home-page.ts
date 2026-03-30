@@ -57,6 +57,8 @@ export class ScoutHomePage extends LitElement {
   ];
 
   render() {
+    const quickLinks = this.navigation.filter((link) => link.href !== '#/home').slice(0, 4);
+
     return html`
       <section class="hero">
         <div class="hero-copy">
@@ -68,8 +70,8 @@ export class ScoutHomePage extends LitElement {
           </p>
 
           <div class="hero-actions">
-            <md-filled-button href="#/chatrooms">Enter JOTI</md-filled-button>
-            <md-outlined-button href="#/events">Today’s schedule</md-outlined-button>
+            <md-filled-button href="#/form">Enter JOTI</md-filled-button>
+            <md-outlined-button href="#/map">Today’s schedule</md-outlined-button>
           </div>
 
           <div class="status-row" aria-label="Highlights">
@@ -112,7 +114,7 @@ export class ScoutHomePage extends LitElement {
 
         <scout-panel headline="Quick Links" subhead="Jump straight into the areas Scouts use the most.">
           <ul class="link-list">
-            ${this.navigation.slice(0, 4).map(
+            ${quickLinks.map(
               (link) => html`
                 <li>
                   <a href=${link.href}>${link.label}</a>
