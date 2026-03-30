@@ -32,21 +32,20 @@ export class ScoutApp extends LitElement {
 
   private readonly highlights: CardData[] = [
     { title: 'My Messages', description: '2 new chats waiting from Scouts around the world.', eyebrow: 'Inbox' },
-    { title: 'Event Schedule', description: 'Catch the digital campfire and badge workshop today.', eyebrow: 'Today' },
-    { title: 'JOTI Activities', description: 'Take on online challenges and unlock new badges.', eyebrow: 'Explore' },
+   
     { title: 'Scouting Tips', description: 'Fresh ideas for teamwork, safety, and leadership.', eyebrow: 'Learn' },
   ];
 
   private readonly updates = [
     'New JOTI event starting soon — just now',
     'You joined a new chat room — 1 hour ago',
-    'Badge earned: Digital Communicator — yesterday',
+    
   ];
 
   private readonly involvement: CardData[] = [
     { title: 'Join the Chat!', description: 'Talk with Scouts worldwide in real time.' },
-    { title: 'Live Campfire', description: 'Watch the virtual campfire and share stories.' },
-    { title: 'JOTI Challenges', description: 'Complete fun online tasks and earn badges.' },
+   ,
+   
   ];
 
   private toggleMenu = () => {
@@ -102,20 +101,15 @@ export class ScoutApp extends LitElement {
                 </div>
 
                 <div class="status-row" aria-label="Highlights">
-                  <span class="status-pill">2 new chats</span>
-                  <span class="status-pill">1 badge earned</span>
-                  <span class="status-pill">Campfire live at 19:00</span>
+                <span class="status-pill">0 new chats</span>
+                
+                 
                 </div>
               </div>
 
               <div class="hero-aside" id="events">
                 <p class="eyebrow">Live now</p>
-                <h2>Global Campfire</h2>
-                <p>Share stories, songs, and greetings with Scouts across time zones.</p>
-                <ul class="mini-list">
-                  <li>Opening welcome at 18:30</li>
-                  <li>Digital badge workshop at 20:00</li>
-                  <li>Friendly challenge leaderboard updates</li>
+                
                 </ul>
               </div>
             </section>
