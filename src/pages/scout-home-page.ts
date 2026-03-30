@@ -20,6 +20,7 @@ type LinkData = {
 @customElement('scout-home-page')
 export class ScoutHomePage extends LitElement {
   @property({ attribute: false }) navigation: LinkData[] = [];
+  @property({ type: String }) userName = 'Scout';
 
   private readonly highlights: CardData[] = [
     {
@@ -63,7 +64,7 @@ export class ScoutHomePage extends LitElement {
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Jamboree on the Internet</p>
-          <h1>Welcome back, Finnley!</h1>
+          <h1>Welcome back, ${this.userName}!</h1>
           <p class="hero-text">
             Ready for your next JOTI adventure? Connect with Scouts from all over the world in a
             clearer, more modern dashboard.

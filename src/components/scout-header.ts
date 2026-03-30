@@ -39,7 +39,7 @@ export class ScoutHeader extends LitElement {
             class="menu-button"
             type="button"
             @click=${this.handleMenuClick}
-            aria-label="Open navigation menu"
+            aria-label=${this.menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-controls=${this.drawerId}
             aria-expanded=${this.menuOpen ? 'true' : 'false'}
           >

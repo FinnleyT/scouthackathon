@@ -21,6 +21,8 @@ export class ScoutApp extends LitElement {
   @state() private menuOpen = false;
   @state() private route = 'home';
 
+  private readonly userName = 'Finnley';
+
   private readonly drawerId = 'primary-nav-drawer';
 
   private readonly navigation: LinkData[] = [
@@ -77,6 +79,11 @@ export class ScoutApp extends LitElement {
   }
 
   disconnectedCallback() {
+    if (this.menuOpen) {
+      this.menuOpen = false;
+      document.documentElement.style.overflow = '';
+    }
+
     window.removeEventListener('hashchange', this.handleHashChange);
     window.removeEventListener('keydown', this.handleKeyDown);
     super.disconnectedCallback();
@@ -121,7 +128,7 @@ export class ScoutApp extends LitElement {
   private renderPage(route: string, pageLabel: string) {
     switch (route) {
       case 'home':
-        return html`<scout-home-page .navigation=${this.navigation}></scout-home-page>`;
+        return html`<scout-home-page .navigation=${this.navigation} .userName=${this.userName}></scout-home-page>`;
       case 'settings':
         return html`<scout-settings-page .label=${pageLabel}></scout-settings-page>`;
       case 'map':
@@ -141,7 +148,7 @@ export class ScoutApp extends LitElement {
     return html`
       <div class="app-shell">
         <scout-header
-          userName="Finnley"
+          .userName=${this.userName}
           profileHref="#/profile"
           .menuOpen=${this.menuOpen}
           drawerId=${this.drawerId}
