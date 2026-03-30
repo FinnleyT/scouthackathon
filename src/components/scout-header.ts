@@ -18,6 +18,9 @@ const menuIcon = html`
 export class ScoutHeader extends LitElement {
   @property({ type: String }) appTitle = 'Scout JOTI Online';
   @property({ type: String }) userName = 'Finnley';
+  @property({ type: String }) profileHref = '#/profile';
+  @property({ type: Boolean }) menuOpen = false;
+  @property({ type: String }) drawerId = 'primary-nav-drawer';
 
   private handleMenuClick = () => {
     this.dispatchEvent(
@@ -37,6 +40,8 @@ export class ScoutHeader extends LitElement {
             type="button"
             @click=${this.handleMenuClick}
             aria-label="Open navigation menu"
+            aria-controls=${this.drawerId}
+            aria-expanded=${this.menuOpen ? 'true' : 'false'}
           >
             ${menuIcon}
           </button>
@@ -52,7 +57,7 @@ export class ScoutHeader extends LitElement {
             <span>Signed in as</span>
             <strong>${this.userName}</strong>
           </div>
-          <md-outlined-button>My Profile</md-outlined-button>
+          <md-outlined-button href=${this.profileHref}>My Profile</md-outlined-button>
         </div>
       </header>
     `;
