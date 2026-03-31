@@ -4,15 +4,20 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "debug": "concurrently -n EMULATORS,APP \"npm run emulators\" \"npm run dev -- --mode debug\"",
     "dev": "vite",
+    "emulators": "node scripts/firebase-emulators.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@material/web": "^2.4.1",
+    "firebase": "^12.11.0",
     "lit": "^3.3.2"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
+    "firebase-tools": "^14.18.0",
     "typescript": "~5.9.3",
     "vite": "^8.0.1"
   }
