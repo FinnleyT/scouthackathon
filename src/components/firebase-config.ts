@@ -19,10 +19,10 @@ const useEmulators = import.meta.env.MODE === 'debug';
 
 const emulatorHost = '127.0.0.1';
 const emulatorPorts = {
-  auth: 9099,
-  firestore: 8080,
-  database: 9000,
-  storage: 9199,
+  auth: 19100,
+  firestore: 18080,
+  database: 19000,
+  storage: 19199,
 } as const;
 
 const emulatorsConnectedFlag = '__scout_firebase_emulators_connected__';

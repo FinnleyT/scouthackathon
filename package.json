@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "debug": "concurrently -k -n EMULATORS,APP \"npm run emulators\" \"npm run dev -- --mode debug\"",
+    "debug": "concurrently -n EMULATORS,APP \"npm run emulators\" \"npm run dev -- --mode debug\"",
     "dev": "vite",
     "emulators": "node scripts/firebase-emulators.mjs",
     "build": "tsc && vite build",

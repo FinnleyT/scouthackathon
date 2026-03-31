@@ -15,6 +15,7 @@ dist-ssr
 # Firebase emulators / CLI
 .firebase/
 firebase/.firebase/
+firebase-export-*/
 firebase-debug.log
 firestore-debug.log
 ui-debug.log

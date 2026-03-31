@@ -1,3 +1,3 @@
 import './index.css';
-import './components/Firebsae-config.ts';
+import './components/firebase-config.ts';
 import './components/scout-app.ts';
