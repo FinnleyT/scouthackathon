@@ -32,6 +32,7 @@ export class ScoutApp extends LitElement {
 
   private readonly highlights: CardData[] = [
     { title: 'My Messages', description: '2 new chats waiting from Scouts around the world.', eyebrow: 'Inbox' },
+
    
     { title: 'Scouting Tips', description: 'Fresh ideas for teamwork, safety, and leadership.', eyebrow: 'Learn' },
   ];
@@ -44,8 +45,8 @@ export class ScoutApp extends LitElement {
 
   private readonly involvement: CardData[] = [
     { title: 'Join the Chat!', description: 'Talk with Scouts worldwide in real time.' },
-   ,
-   
+    
+    
   ];
 
   private toggleMenu = () => {

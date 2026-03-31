@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Scout JOTI Login</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #e8f3e8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .login-box {
+        background: white;
+        width: 320px;
+        padding: 24px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        text-align: center;
+    }
+
+    .title {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: #2f7d32;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: #4a4a4a;
+        margin-bottom: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 14px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background: #2f7d32;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #256628;
+    }
+
+    .small-link {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #2f7d32;
+        cursor: pointer;
+    }
+
+    .small-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="login-box">
+    <div class="title">Scout JOTI Online</div>
+    <div class="subtitle">Log in to start your adventure</div>
+
+    <input type="text" placeholder="Username">
+    <input type="password" placeholder="Password">
+
+    <button onclick="login()">Log In</button>
+
+    <div class="small-link">Forgot your password?</div>
+</div>
+
+<script>
+function login() {
+    // In LIT, this can redirect to your homepage file
+    window.location.href = "index.html"; 
+}
+</script>
+
+</body>
+</html>
