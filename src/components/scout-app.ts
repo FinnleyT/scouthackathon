@@ -8,7 +8,7 @@ import '../pages/scout-form-page.ts';
 import '../pages/scout-home-page.ts';
 import '../pages/scout-list-page.ts';
 import '../pages/scout-map-page.ts';
-import '../pages/scout-settings-page.ts';
+import '../pages/scout-list-page.ts';
 
 type LinkData = {
   label: string;
@@ -27,10 +27,10 @@ export class ScoutApp extends LitElement {
 
   private readonly navigation: LinkData[] = [
     { label: 'Home', href: '#/home', description: 'Overview and latest activity' },
-    { label: 'Settings', href: '#/settings', description: 'Manage your preferences' },
+    { label: 'List view', href: '#/list view', description: 'Use this to find your friends!' },
     { label: 'Map', href: '#/map', description: 'Explore nearby scouting activity' },
     { label: 'Form', href: '#/form', description: 'Submit scouting updates' },
-    { label: 'List', href: '#/list', description: 'Browse saved items' },
+   
   ];
 
   private toggleMenu = () => {
@@ -111,7 +111,7 @@ export class ScoutApp extends LitElement {
       case 'home':
         return 'Home';
       case 'settings':
-        return 'Settings';
+        return 'List view';
       case 'map':
         return 'Map';
       case 'form':
