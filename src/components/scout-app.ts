@@ -3,9 +3,12 @@ import { customElement, state } from 'lit/decorators.js';
 import '@material/web/button/filled-button.js';
 import '@material/web/button/outlined-button.js';
 import './scout-header.ts';
+import './firebase-config.ts';
+import { formatUserName, observeAuthState } from './firebase-auth.ts';
 import '../pages/scout-blank-page.ts';
 import '../pages/scout-form-page.ts';
 import '../pages/scout-home-page.ts';
+import '../pages/scout-login-page.ts';
 import '../pages/scout-list-page.ts';
 import '../pages/scout-map-page.ts';
 import '../pages/scout-list-page.ts';
@@ -21,7 +24,11 @@ export class ScoutApp extends LitElement {
   @state() private menuOpen = false;
   @state() private route = 'home';
 
-  private readonly userName = 'Finnley';
+  @state() private authReady = false;
+  @state() private signedIn = false;
+  @state() private signedInUserName = 'Scout';
+
+  private stopAuthObserver: (() => void) | null = null;
 
   private readonly drawerId = 'primary-nav-drawer';
 
@@ -69,6 +76,17 @@ export class ScoutApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
+    this.stopAuthObserver = observeAuthState((user) => {
+      this.authReady = true;
+      this.signedIn = Boolean(user);
+      this.signedInUserName = user ? formatUserName(user) : 'Scout';
+
+      if (user && this.route === 'login') {
+        window.history.replaceState(null, '', '#/home');
+        this.route = 'home';
+      }
+    });
+
     if (!window.location.hash) {
       window.history.replaceState(null, '', '#/home');
     }
@@ -83,6 +101,9 @@ export class ScoutApp extends LitElement {
       this.menuOpen = false;
       document.documentElement.style.overflow = '';
     }
+
+    this.stopAuthObserver?.();
+    this.stopAuthObserver = null;
 
     window.removeEventListener('hashchange', this.handleHashChange);
     window.removeEventListener('keydown', this.handleKeyDown);
@@ -128,7 +149,10 @@ export class ScoutApp extends LitElement {
   private renderPage(route: string, pageLabel: string) {
     switch (route) {
       case 'home':
-        return html`<scout-home-page .navigation=${this.navigation} .userName=${this.userName}></scout-home-page>`;
+        return html`<scout-home-page
+          .navigation=${this.navigation}
+          .userName=${this.signedInUserName}
+        ></scout-home-page>`;
       case 'settings':
         return html`<scout-settings-page .label=${pageLabel}></scout-settings-page>`;
       case 'map':
@@ -143,12 +167,20 @@ export class ScoutApp extends LitElement {
   }
 
   render() {
+    if (!this.authReady) {
+      return html`<div class="auth-loading" role="status" aria-live="polite">Loading…</div>`;
+    }
+
+    if (!this.signedIn) {
+      return html`<scout-login-page></scout-login-page>`;
+    }
+
     const pageLabel = this.getPageLabel(this.route);
 
     return html`
       <div class="app-shell">
         <scout-header
-          .userName=${this.userName}
+          .userName=${this.signedInUserName}
           profileHref="#/profile"
           .menuOpen=${this.menuOpen}
           drawerId=${this.drawerId}
@@ -196,6 +228,14 @@ export class ScoutApp extends LitElement {
     :host {
       display: block;
       color: var(--scout-on-surface);
+    }
+
+    .auth-loading {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: var(--scout-on-surface-variant);
     }
 
     .app-shell {
