@@ -1,6 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '@material/web/button/outlined-button.js';
+import defaultAvatarUrl from '../assets/default-avatar.svg';
 
 const menuIcon = html`
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -57,7 +57,9 @@ export class ScoutHeader extends LitElement {
             <span>Signed in as</span>
             <strong>${this.userName}</strong>
           </div>
-          <md-outlined-button href=${this.profileHref}>My Profile</md-outlined-button>
+          <a class="profile-avatar" href=${this.profileHref} aria-label="My profile">
+            <img src=${defaultAvatarUrl} alt="" aria-hidden="true" />
+          </a>
         </div>
       </header>
     `;
@@ -143,6 +145,34 @@ export class ScoutHeader extends LitElement {
       justify-content: flex-end;
     }
 
+    .profile-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      color: var(--scout-primary);
+      background: var(--scout-surface-container);
+      border: 1px solid var(--scout-outline-variant);
+      flex: 0 0 auto;
+    }
+
+    .profile-avatar:hover {
+      background: var(--scout-primary-container);
+    }
+
+    .profile-avatar:focus-visible {
+      outline: 3px solid var(--scout-secondary-container);
+      outline-offset: 2px;
+    }
+
+    .profile-avatar svg,
+    .profile-avatar img {
+      width: 24px;
+      height: 24px;
+    }
+
     .greeting {
       text-align: right;
     }
@@ -163,8 +193,7 @@ export class ScoutHeader extends LitElement {
         padding-inline: 14px;
       }
 
-      .greeting,
-      .user-pill md-outlined-button {
+      .greeting {
         display: none;
       }
     }
