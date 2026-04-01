@@ -11,7 +11,6 @@ import '../pages/scout-home-page.ts';
 import '../pages/scout-login-page.ts';
 import '../pages/scout-list-page.ts';
 import '../pages/scout-map-page.ts';
-import '../pages/scout-list-page.ts';
 
 type LinkData = {
   label: string;
@@ -28,13 +27,15 @@ export class ScoutApp extends LitElement {
   @state() private signedIn = false;
   @state() private signedInUserName = 'Scout';
 
+  @state() private signOutErrorMessage = '';
+
   private stopAuthObserver: (() => void) | null = null;
 
   private readonly drawerId = 'primary-nav-drawer';
 
   private readonly navigation: LinkData[] = [
     { label: 'Home', href: '#/home', description: 'Overview and latest activity' },
-    { label: 'List view', href: '#/list view', description: 'See who youve talked to' },
+    { label: 'List view', href: '#/list', description: "See who you've talked to" },
     { label: 'Map', href: '#/map', description: 'Where are the scouts from?' },
     { label: 'Form', href: '#/form', description: 'Submit your chat records' },
    
@@ -56,12 +57,26 @@ export class ScoutApp extends LitElement {
   };
 
   private readonly handleLogout = async () => {
-    await signOutUser();
+    this.signOutErrorMessage = '';
+
+    try {
+      await signOutUser();
+    } catch (error) {
+      console.error('Sign out failed', error);
+      this.signOutErrorMessage = 'Sign out failed. Please try again.';
+    }
   };
 
   private readonly handleDrawerLogout = async () => {
     this.closeMenu();
-    await signOutUser();
+    this.signOutErrorMessage = '';
+
+    try {
+      await signOutUser();
+    } catch (error) {
+      console.error('Sign out failed', error);
+      this.signOutErrorMessage = 'Sign out failed. Please try again.';
+    }
   };
 
   private readonly handleKeyDown = (event: KeyboardEvent) => {
@@ -198,6 +213,9 @@ export class ScoutApp extends LitElement {
         ></scout-header>
 
         <div class="layout">
+          ${this.signOutErrorMessage
+            ? html`<p class="error" role="alert" aria-live="assertive">${this.signOutErrorMessage}</p>`
+            : null}
           ${this.menuOpen
             ? html`<button
                 class="scrim"
@@ -213,7 +231,7 @@ export class ScoutApp extends LitElement {
             aria-label="Primary navigation"
             aria-hidden=${this.menuOpen ? 'false' : 'true'}
           >
-            <p class="nav-title">Navigate</p>
+            <p class="nav-title">PAGES</p>
             <nav>
               ${this.navigation.map(
                 (link) => html`
@@ -226,7 +244,7 @@ export class ScoutApp extends LitElement {
 
               <button class="nav-link nav-action" type="button" @click=${this.handleDrawerLogout}>
                 <span>Log out</span>
-                <small>Sign out of Scout</small>
+                <small>Sign out of JOTI</small>
               </button>
             </nav>
           </aside>
@@ -261,6 +279,15 @@ export class ScoutApp extends LitElement {
       width: min(1280px, calc(100% - 32px));
       margin: 0 auto;
       padding: 24px 0 32px;
+    }
+
+    .error {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--scout-secondary-container);
+      color: var(--scout-on-secondary-container);
+      line-height: 1.5;
     }
 
     .drawer {
