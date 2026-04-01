@@ -21,7 +21,5 @@
 <!-- ABOUT:START -->
 ## About
 
-# About The App
-
-This app was made 100% by a team of scouts.
+_About content lives in `About.md`._
 <!-- ABOUT:END -->
