@@ -19,7 +19,6 @@
 
 
 <!-- ABOUT:START -->
-
 ## About
 
 # About The App
