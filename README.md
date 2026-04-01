@@ -5,5 +5,7 @@
 <!-- ABOUT:START -->
 ## About
 
-_About content lives in `src/assets/About.md`._
+# About The App
+
+This app was made 100% by a team of scouts.
 <!-- ABOUT:END -->
