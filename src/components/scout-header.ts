@@ -1,5 +1,5 @@
-import { LitElement, css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { LitElement, css, html, type PropertyValues } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import defaultAvatarUrl from '../assets/default-avatar.svg';
 
 const menuIcon = html`
@@ -22,6 +22,8 @@ export class ScoutHeader extends LitElement {
   @property({ type: Boolean }) menuOpen = false;
   @property({ type: String }) drawerId = 'primary-nav-drawer';
 
+  @state() private profileMenuOpen = false;
+
   private handleMenuClick = () => {
     this.dispatchEvent(
       new CustomEvent('menu-toggle', {
@@ -30,6 +32,86 @@ export class ScoutHeader extends LitElement {
       }),
     );
   };
+
+  private readonly toggleProfileMenu = () => {
+    this.profileMenuOpen = !this.profileMenuOpen;
+
+    if (this.profileMenuOpen) {
+      void this.updateComplete.then(() => {
+        const firstItem = this.renderRoot.querySelector<HTMLElement>('.profile-menu a, .profile-menu button');
+        firstItem?.focus();
+      });
+    }
+  };
+
+  private readonly closeProfileMenu = () => {
+    this.profileMenuOpen = false;
+  };
+
+  private readonly handleLogoutClick = () => {
+    this.closeProfileMenu();
+    this.dispatchEvent(
+      new CustomEvent('logout', {
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  };
+
+  private readonly handleGlobalKeyDown = (event: KeyboardEvent) => {
+    if (!this.profileMenuOpen) {
+      return;
+    }
+
+    if (event.key !== 'Escape') {
+      return;
+    }
+
+    event.preventDefault();
+    this.closeProfileMenu();
+
+    void this.updateComplete.then(() => {
+      const trigger = this.renderRoot.querySelector<HTMLButtonElement>('button.profile-avatar');
+      trigger?.focus();
+    });
+  };
+
+  private readonly handleGlobalPointerDown = (event: PointerEvent) => {
+    if (!this.profileMenuOpen) {
+      return;
+    }
+
+    const wrapper = this.renderRoot.querySelector<HTMLElement>('.profile-menu-wrapper');
+    if (!wrapper) {
+      return;
+    }
+
+    const path = event.composedPath();
+    if (!path.includes(wrapper)) {
+      this.closeProfileMenu();
+    }
+  };
+
+  protected updated(changedProperties: PropertyValues) {
+    if (!changedProperties.has('profileMenuOpen')) {
+      return;
+    }
+
+    if (this.profileMenuOpen) {
+      window.addEventListener('keydown', this.handleGlobalKeyDown, true);
+      window.addEventListener('pointerdown', this.handleGlobalPointerDown, true);
+      return;
+    }
+
+    window.removeEventListener('keydown', this.handleGlobalKeyDown, true);
+    window.removeEventListener('pointerdown', this.handleGlobalPointerDown, true);
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('keydown', this.handleGlobalKeyDown, true);
+    window.removeEventListener('pointerdown', this.handleGlobalPointerDown, true);
+    super.disconnectedCallback();
+  }
 
   render() {
     return html`
@@ -57,9 +139,42 @@ export class ScoutHeader extends LitElement {
             <span>Signed in as</span>
             <strong>${this.userName}</strong>
           </div>
-          <a class="profile-avatar" href=${this.profileHref} aria-label="My profile">
-            <img src=${defaultAvatarUrl} alt="" aria-hidden="true" />
-          </a>
+          <div class="profile-menu-wrapper">
+            <button
+              class="profile-avatar"
+              type="button"
+              @click=${this.toggleProfileMenu}
+              aria-label="Account menu"
+              aria-haspopup="menu"
+              aria-expanded=${this.profileMenuOpen ? 'true' : 'false'}
+              aria-controls="profile-menu"
+            >
+              <img src=${defaultAvatarUrl} alt="" aria-hidden="true" />
+            </button>
+
+            ${this.profileMenuOpen
+              ? html`
+                  <div id="profile-menu" class="profile-menu" role="menu" aria-label="Account">
+                    <a
+                      class="menu-item"
+                      role="menuitem"
+                      href=${this.profileHref}
+                      @click=${this.closeProfileMenu}
+                    >
+                      My profile
+                    </a>
+                    <button
+                      class="menu-item"
+                      role="menuitem"
+                      type="button"
+                      @click=${this.handleLogoutClick}
+                    >
+                      Log out
+                    </button>
+                  </div>
+                `
+              : null}
+          </div>
         </div>
       </header>
     `;
@@ -156,7 +271,10 @@ export class ScoutHeader extends LitElement {
       background: var(--scout-surface-container);
       border: 1px solid var(--scout-outline-variant);
       flex: 0 0 auto;
+      cursor: pointer;
+      padding: 0;
     }
+
 
     .profile-avatar:hover {
       background: var(--scout-primary-container);
@@ -171,6 +289,50 @@ export class ScoutHeader extends LitElement {
     .profile-avatar img {
       width: 24px;
       height: 24px;
+    }
+
+    .profile-menu-wrapper {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .profile-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 180px;
+      padding: 8px;
+      border-radius: 16px;
+      background: var(--scout-surface);
+      border: 1px solid var(--scout-outline-variant);
+      box-shadow: 0 12px 24px rgba(22, 32, 20, 0.12);
+      z-index: 30;
+    }
+
+    .menu-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: transparent;
+      border: 0;
+      font: inherit;
+      color: var(--scout-on-surface);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .menu-item:hover {
+      background: var(--scout-primary-container);
+      color: var(--scout-on-primary-container);
+    }
+
+    .menu-item:focus-visible {
+      outline: 3px solid var(--scout-secondary-container);
+      outline-offset: 2px;
     }
 
     .greeting {

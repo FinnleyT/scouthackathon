@@ -4,7 +4,7 @@ import '@material/web/button/filled-button.js';
 import '@material/web/button/outlined-button.js';
 import './scout-header.ts';
 import './firebase-config.ts';
-import { formatUserName, observeAuthState } from './firebase-auth.ts';
+import { formatUserName, observeAuthState, signOutUser } from './firebase-auth.ts';
 import '../pages/scout-blank-page.ts';
 import '../pages/scout-form-page.ts';
 import '../pages/scout-home-page.ts';
@@ -34,9 +34,9 @@ export class ScoutApp extends LitElement {
 
   private readonly navigation: LinkData[] = [
     { label: 'Home', href: '#/home', description: 'Overview and latest activity' },
-    { label: 'List view', href: '#/list view', description: 'Use this to find your friends!' },
-    { label: 'Map', href: '#/map', description: 'Explore nearby scouting activity' },
-    { label: 'Form', href: '#/form', description: 'Submit scouting updates' },
+    { label: 'List view', href: '#/list view', description: 'See who youve talked to' },
+    { label: 'Map', href: '#/map', description: 'Where are the scouts from?' },
+    { label: 'Form', href: '#/form', description: 'Submit your chat records' },
    
   ];
 
@@ -53,6 +53,15 @@ export class ScoutApp extends LitElement {
 
   private closeMenu = () => {
     this.menuOpen = false;
+  };
+
+  private readonly handleLogout = async () => {
+    await signOutUser();
+  };
+
+  private readonly handleDrawerLogout = async () => {
+    this.closeMenu();
+    await signOutUser();
   };
 
   private readonly handleKeyDown = (event: KeyboardEvent) => {
@@ -185,6 +194,7 @@ export class ScoutApp extends LitElement {
           .menuOpen=${this.menuOpen}
           drawerId=${this.drawerId}
           @menu-toggle=${this.toggleMenu}
+          @logout=${this.handleLogout}
         ></scout-header>
 
         <div class="layout">
@@ -213,6 +223,11 @@ export class ScoutApp extends LitElement {
                   </a>
                 `,
               )}
+
+              <button class="nav-link nav-action" type="button" @click=${this.handleDrawerLogout}>
+                <span>Log out</span>
+                <small>Sign out of Scout</small>
+              </button>
             </nav>
           </aside>
 
@@ -292,6 +307,13 @@ export class ScoutApp extends LitElement {
       transition:
         transform 0.2s ease,
         background 0.2s ease;
+    }
+
+    button.nav-link {
+      border: 0;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
     }
 
     .nav-link:hover {
