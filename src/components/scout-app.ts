@@ -4,14 +4,13 @@ import '@material/web/button/filled-button.js';
 import '@material/web/button/outlined-button.js';
 import './scout-header.ts';
 import './firebase-config.ts';
-import { formatUserName, observeAuthState } from './firebase-auth.ts';
+import { formatUserName, observeAuthState, signOutUser } from './firebase-auth.ts';
 import '../pages/scout-blank-page.ts';
 import '../pages/scout-form-page.ts';
 import '../pages/scout-home-page.ts';
 import '../pages/scout-login-page.ts';
 import '../pages/scout-list-page.ts';
 import '../pages/scout-map-page.ts';
-import '../pages/scout-list-page.ts';
 
 type LinkData = {
   label: string;
@@ -28,15 +27,17 @@ export class ScoutApp extends LitElement {
   @state() private signedIn = false;
   @state() private signedInUserName = 'Scout';
 
+  @state() private signOutErrorMessage = '';
+
   private stopAuthObserver: (() => void) | null = null;
 
   private readonly drawerId = 'primary-nav-drawer';
 
   private readonly navigation: LinkData[] = [
     { label: 'Home', href: '#/home', description: 'Overview and latest activity' },
-    { label: 'List view', href: '#/list view', description: 'Use this to find your friends!' },
-    { label: 'Map', href: '#/map', description: 'Explore nearby scouting activity' },
-    { label: 'Form', href: '#/form', description: 'Submit scouting updates' },
+    { label: 'List view', href: '#/list', description: "See who you've talked to" },
+    { label: 'Map', href: '#/map', description: 'Where are the scouts from?' },
+    { label: 'Form', href: '#/form', description: 'Submit your chat records' },
    
   ];
 
@@ -53,6 +54,29 @@ export class ScoutApp extends LitElement {
 
   private closeMenu = () => {
     this.menuOpen = false;
+  };
+
+  private readonly handleLogout = async () => {
+    this.signOutErrorMessage = '';
+
+    try {
+      await signOutUser();
+    } catch (error) {
+      console.error('Sign out failed', error);
+      this.signOutErrorMessage = 'Sign out failed. Please try again.';
+    }
+  };
+
+  private readonly handleDrawerLogout = async () => {
+    this.closeMenu();
+    this.signOutErrorMessage = '';
+
+    try {
+      await signOutUser();
+    } catch (error) {
+      console.error('Sign out failed', error);
+      this.signOutErrorMessage = 'Sign out failed. Please try again.';
+    }
   };
 
   private readonly handleKeyDown = (event: KeyboardEvent) => {
@@ -185,9 +209,13 @@ export class ScoutApp extends LitElement {
           .menuOpen=${this.menuOpen}
           drawerId=${this.drawerId}
           @menu-toggle=${this.toggleMenu}
+          @logout=${this.handleLogout}
         ></scout-header>
 
         <div class="layout">
+          ${this.signOutErrorMessage
+            ? html`<p class="error" role="alert" aria-live="assertive">${this.signOutErrorMessage}</p>`
+            : null}
           ${this.menuOpen
             ? html`<button
                 class="scrim"
@@ -203,7 +231,7 @@ export class ScoutApp extends LitElement {
             aria-label="Primary navigation"
             aria-hidden=${this.menuOpen ? 'false' : 'true'}
           >
-            <p class="nav-title">Navigate</p>
+            <p class="nav-title">PAGES</p>
             <nav>
               ${this.navigation.map(
                 (link) => html`
@@ -213,6 +241,11 @@ export class ScoutApp extends LitElement {
                   </a>
                 `,
               )}
+
+              <button class="nav-link nav-action" type="button" @click=${this.handleDrawerLogout}>
+                <span>Log out</span>
+                <small>Sign out of JOTI</small>
+              </button>
             </nav>
           </aside>
 
@@ -246,6 +279,15 @@ export class ScoutApp extends LitElement {
       width: min(1280px, calc(100% - 32px));
       margin: 0 auto;
       padding: 24px 0 32px;
+    }
+
+    .error {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--scout-secondary-container);
+      color: var(--scout-on-secondary-container);
+      line-height: 1.5;
     }
 
     .drawer {
@@ -292,6 +334,13 @@ export class ScoutApp extends LitElement {
       transition:
         transform 0.2s ease,
         background 0.2s ease;
+    }
+
+    button.nav-link {
+      border: 0;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
     }
 
     .nav-link:hover {
