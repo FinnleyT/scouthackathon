@@ -11,6 +11,7 @@ import '../pages/scout-home-page.ts';
 import '../pages/scout-login-page.ts';
 import '../pages/scout-list-page.ts';
 import '../pages/scout-map-page.ts';
+import '../pages/scout-about-page.ts';
 
 type LinkData = {
   label: string;
@@ -38,7 +39,7 @@ export class ScoutApp extends LitElement {
     { label: 'List view', href: '#/list', description: "See who you've talked to" },
     { label: 'Map', href: '#/map', description: 'Where are the scouts from?' },
     { label: 'Form', href: '#/form', description: 'Submit your chat records' },
-   
+    { label: 'About', href: '#/about', description: 'About this app' },
   ];
 
   private toggleMenu = () => {
@@ -155,6 +156,8 @@ export class ScoutApp extends LitElement {
     switch (route) {
       case 'home':
         return 'Home';
+      case 'about':
+        return 'About';
       case 'settings':
         return 'List view';
       case 'map':
@@ -177,6 +180,8 @@ export class ScoutApp extends LitElement {
           .navigation=${this.navigation}
           .userName=${this.signedInUserName}
         ></scout-home-page>`;
+      case 'about':
+        return html`<scout-about-page .label=${pageLabel}></scout-about-page>`;
       case 'settings':
         return html`<scout-settings-page .label=${pageLabel}></scout-settings-page>`;
       case 'map':
