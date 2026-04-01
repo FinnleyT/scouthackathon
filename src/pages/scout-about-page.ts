@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { marked } from 'marked';
-import aboutMarkdown from '../assets/about.md?raw';
+import aboutMarkdown from '../assets/About.md?raw';
 
 @customElement('scout-about-page')
 export class ScoutAboutPage extends LitElement {
