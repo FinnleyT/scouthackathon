@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-sync-readme:
+    # Avoid infinite loops when CI auto-commits README updates.
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Sync README from About
+        run: npm run sync-readme
+
+      # On PRs we can't safely push commits back, so we fail if README is out of date.
+      - name: Verify README is up to date (PR only)
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ -n "$(git status --porcelain -- README.md)" ]; then
+            echo "README.md is out of date. Run: npm run sync-readme"
+            git --no-pager diff -- README.md || true
+            exit 1
+          fi
+
+      # On push, auto-commit README changes (if any) back to the same branch.
+      - name: Commit README updates (push only)
+        if: github.event_name == 'push'
+        run: |
+          if [ -z "$(git status --porcelain -- README.md)" ]; then
+            echo "README.md unchanged"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+          git commit -m "chore: sync README from About"
+          git push

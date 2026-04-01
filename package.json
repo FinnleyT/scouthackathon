@@ -7,6 +7,7 @@
     "debug": "concurrently -n EMULATORS,APP \"npm run emulators\" \"npm run dev -- --mode debug\"",
     "dev": "vite",
     "emulators": "node scripts/firebase-emulators.mjs",
+    "sync-readme": "node scripts/sync-readme.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
